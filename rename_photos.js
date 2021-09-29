@@ -10,6 +10,7 @@
  * New names must be returned in the same order in which they were provided.
  * Combination of photo names, cities and date are not unique due to photos being taken in multiple timezones.
  * unique id is a sequential number based on the city taken and the time it was taken. ordered least to greatest.
+ * the unique id should have the same length as the length of the largest number in the photo group.
  * 
  * Assumptions:
  * - photoname, photoextension, cityname are in [a-z, A-Z]
@@ -33,29 +34,29 @@
 
 test('empty case', '', '', '');
 test('null case', '', null, null);
-test('single photo case', 'Warsaw01.jpg', 'photo.jpg, Warsaw, 2013-09-05 14:08:15');
+test('single photo case', 'Warsaw1.jpg', 'photo.jpg, Warsaw, 2013-09-05 14:08:15');
 
 test(
 'two photo case ordered correctly', 
-`Warsaw01.jpg
-Warsaw02.jpg`, 
+`Warsaw1.jpg
+Warsaw2.jpg`, 
 `photo.jpg, Warsaw, 2013-09-05 14:08:13
 photo.jpg, Warsaw, 2013-09-05 14:08:14`
 );
 
 test(
 'two photo case ordered incorrectly', 
-`Warsaw02.jpg
-Warsaw01.jpg`, 
+`Warsaw2.jpg
+Warsaw1.jpg`, 
 `photo.jpg, Warsaw, 2013-09-05 14:08:15
 photo.jpg, Warsaw, 2013-09-05 14:08:14`
 );
 
 test(
 'duplicate photo name and date ordered correctly', 
-`Warsaw01.jpg
-Warsaw02.jpg
-Warsaw03.jpg`, 
+`Warsaw1.jpg
+Warsaw2.jpg
+Warsaw3.jpg`, 
 `photo.jpg, Warsaw, 2013-09-05 14:08:13
 photo.jpg, Warsaw, 2013-09-05 14:08:13
 photo.jpg, Warsaw, 2013-09-05 14:08:14`
@@ -63,9 +64,9 @@ photo.jpg, Warsaw, 2013-09-05 14:08:14`
     
 test(
 'duplicate photo name and date ordered incorrectly', 
-`Warsaw03.jpg
-Warsaw01.jpg
-Warsaw02.jpg`, 
+`Warsaw3.jpg
+Warsaw1.jpg
+Warsaw2.jpg`, 
 `photo.jpg, Warsaw, 2013-09-05 14:08:14
 photo.jpg, Warsaw, 2013-09-05 14:08:13
 photo.jpg, Warsaw, 2013-09-05 14:08:13`
@@ -73,11 +74,39 @@ photo.jpg, Warsaw, 2013-09-05 14:08:13`
 
 test(
 'multiple cities and file extensions', 
-`Perth01.jpg
+`Perth1.jpg
+Warsaw1.jpg
+Warsaw2.jpg
+Melbourne1.png`, 
+`photo.jpg, Perth, 2013-09-05 14:08:14
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.png, Melbourne, 2013-09-05 14:08:12`
+);
+
+test(
+'more than 9 cities for leading zeros', 
+`Perth1.jpg
 Warsaw01.jpg
 Warsaw02.jpg
-Melbourne01.png`, 
+Warsaw03.jpg
+Warsaw04.jpg
+Warsaw05.jpg
+Warsaw06.jpg
+Warsaw07.jpg
+Warsaw08.jpg
+Warsaw09.jpg
+Warsaw10.jpg
+Melbourne1.png`, 
 `photo.jpg, Perth, 2013-09-05 14:08:14
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
+photo.jpg, Warsaw, 2013-09-05 14:08:13
 photo.jpg, Warsaw, 2013-09-05 14:08:13
 photo.jpg, Warsaw, 2013-09-05 14:08:13
 photo.png, Melbourne, 2013-09-05 14:08:12`
@@ -96,15 +125,20 @@ function solutionA(S) {
     }
 
     // split
-    let photos = S.split(`\n`);
-    let photoJson = [];
+    const photos = S.split(`\n`);
+    const photoJson = [];
 
-    // assign unique ids and extract information
+    // assign unique ids, extract information and count total occurances of cities
+
+    const cityTotals = {};
+    
     for (var p = 0; p < photos.length; p++) {
-        let photo = photos[p].split(',');
-        let name = photo[0].split('.');
-        let city = photo[1].trim();
-        let date = Date.parse(photo[2]);
+        
+        const photo = photos[p].split(',');
+        const name = photo[0].split('.');
+        const city = photo[1].trim();
+        const date = Date.parse(photo[2]);
+        
         photoJson.push({
             'id': p,
             'name': name[0],
@@ -112,23 +146,33 @@ function solutionA(S) {
             'city': city,
             'date': date,
         });
+
+        // count total occurances in city grouping
+        cityTotals[city] = increment(cityTotals[city]);
     }
     
     // sort by date so correct identifiers can be assigned
     photoJson.sort(function (a, b) {
 
-        // Note: duplicate photo times due to city timezones will have their order sorted by
-        // their id. i.e. original input position.
+        // sort by dates
         const dateA = a['date'];
         const dateB = b['date'];
 
-        // sort ascending
-        return dateA - dateB;
+        // only if dates are different
+        if (dateA > dateB) return 1;
+        if (dateA < dateB) return -1;
+
+        // if dates are the same. Sort by id.
+        const idA = a['id'];
+        const idB = b['id'];
+
+        // ascending order
+        return idA - idB;
     })
 
-    // assign photo names
+    // assign new photo names
 
-    const cityCounts = {};
+    const cityRunningTotal = {};
 
     // loop through sorted photo array
     for (var p = 0; p < photoJson.length; p++) {
@@ -136,22 +180,17 @@ function solutionA(S) {
         const city = photo['city'];
         const ext = photo['ext'];
 
-        // update city counts
-        if (cityCounts[city] == undefined) {
-            cityCounts[city] = 1;
-        } else {
-            cityCounts[city] = cityCounts[city] + 1;
-        }
-        
-        // get id from count
-        let id = `${cityCounts[city]}`;
+        // update running total
+        cityRunningTotal[city] = increment(cityRunningTotal[city]);
 
-        // enforce 2 digit length with prefixed 0
-        if(id.length == 1) {
-            // TODO - leading 0s - all photo numbers should have same length.. same as largesrt
-            id = `0${id}`;
-        }
+        // get leading zeros
+        const runningTotal = `${cityRunningTotal[city]}`;
+        const cityTotal = `${cityTotals[city]}`;
+        const leading = getLeadingZeros(runningTotal.length, cityTotal.length);
 
+        // get id
+        let id = `${leading}${runningTotal}`;
+     
         // assign new filename
         const filename = `${city}${id}.${ext}`;
         photo['newName'] = filename;
@@ -187,6 +226,22 @@ function solutionA(S) {
 
 }
 
+function getLeadingZeros(length1, length2) {
+    let leading = '';
+    for (var l = length1 ; l < length2; l++) {
+        leading = `0${leading}`;
+    }
+    return leading;
+}
+
+function increment(value) {
+    if (value === undefined) {
+        return 1;
+    } else {
+        return value + 1;
+    }
+}
+
 /**
  * Basic function to perform automated unit testing
  * @param {*} input Input value to pass to tested function
@@ -207,5 +262,6 @@ function solutionA(S) {
     }
      
     console.log(`${name}`);
-    console.log(`pass: ${result}\t expected: ${expectedResult}\t actual: ${actual}\t ${inputs}\t`);
+    console.log(`pass: ${result}`);
+    console.log(`expected: ${expectedResult}\t actual: ${actual}\t ${inputs}\t`);
 }
