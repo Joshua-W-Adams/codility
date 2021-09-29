@@ -116,7 +116,6 @@ function solutionA(A, D) {
 
 }
 
-
 /**
  * Basic function to perform automated unit testing
  * @param {*} input Input value to pass to tested function
@@ -133,7 +132,7 @@ function solutionA(A, D) {
     } else {
         actual = solutionA(inputA);
         result = actual == expectedResult;
-        inputs = `inputA: ${inputA}`;
+        inputs = `inputA: ${inputA}\n`;
     }
      
     console.log(`${name}`);
