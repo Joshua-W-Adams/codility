@@ -93,3 +93,23 @@ O(N^2)
 O(N + N^2)
 // i.e. the non dominant N gets dropped
 ```
+
+## Logarithm
+
+logarithm is simply the inverse of taking an expotent of something. It can be described as follows:
+
+```
+log(base)(Result) = exponent
+```
+
+Which is simply another way of showing:
+
+```
+base^? = result
+```
+
+An example is as follows:
+
+```
+log2(8) = (2^? = 8) = 3
+```
