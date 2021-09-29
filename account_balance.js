@@ -1,19 +1,27 @@
 /**
- * <TODO: Add description of problem>
+ * Determine the account balance in the year 2020 for a list of transactions.
+ * 
+ * Transactions are are provided as the following parameters:
+ * A: []<int>
+ * D: []<String YYYY-MM-DD>
+ * 
+ * Monthly account fees are also charged at $5 per month. Unless there have been atleast 3 negative transactions with a minimal total of $100.
  * 
  * Assumptions:
- * - <TODO: add list of assumptions for solution>
+ * - Dates will only ever be in the year 2020
+ * - The account has been open for the whole year (e.g. Fees will always attempt to be charged for every month)
+ * - Input arrays will always be the same length
+ * - Input arrays will always have data in the format specified
+ * - Initial balance is always 0
  * 
  * Complexity:
- * - <TODO: add expected time complexity>
- * - <TODO: Add expected space complexity>
+ * - Time Complexity: O(A) i.e. performance scales linearly with input size. Only performs a single loop.
  */
 
 /**
  * Sample Test cases
  */
 
-// <TODO: Add the following test cases>
 // Correctness:
 // - empty or zero 
 // - minimal - just one input, or whatever is the absolute minimal conceiveable input
@@ -22,19 +30,16 @@
 // Performance:
 // - worst case - i.e. biggest possible numbers for speed and space constraints
 
-test('some test name', [0,1,2,4], 3);
-// solutionA([100, 100, -10], ["2020-12-31", "2020-12-31", "2020-11-31"]);
+test('empty case', 0, [], []);
+test('null case', 0, null, null);
+test('minimal positive case', -50, [10], ['2020-01-01']);
+test('minimal negative case', -70, [-10], ['2020-01-01']);
 
-/**
- * Basic function to perform automated unit testing
- * @param {*} input Input value to pass to tested function
- * @param {*} expectedResult result tested function should return
- */
-function test(name, input, expectedResult) {
-    let result = solutionA(input) == expectedResult;
-    console.log(`name: ${name}`);
-    console.log(`pass: ${result}\t expectedResult: ${expectedResult}\t input: ${input}\n`);
-}
+test('fee applied all months', 230, [100, 100, 100, -10], ['2020-12-31', '2020-12-22', '2020-12-03', '2020-12-29']);
+test('fee applied 11 months', 25, [180, -50, -25, -25], ['2020-01-01', '2020-01-01', '2020-01-01', '2020-01-31']);
+test('fee applied 11 months. 0 case.', -164, [1, -1, 0, -105, 1], ['2020-12-31', '2020-04-04', '2020-04-04', '2020-04-14', '2020-07-12']);
+test('transaction values exceeds fee limit. Count does not.', -164, [1, -1, 0, -105, 1], ['2020-12-31', '2020-04-04', '2020-04-04', '2020-04-14', '2020-07-12']);
+test('transaction count exceeds fee limit. Value does not.', 80, [100, 100, -10, -20, -30], ['2020-01-01', '2020-02-01', '2020-02-11', '2020-02-05', '2020-02-08']);
 
 /**
  * Default function signature for solution
@@ -42,65 +47,95 @@ function test(name, input, expectedResult) {
  * @param {*} D Some input parameter
  * @returns Some solution
  */
-
 function solutionA(A, D) {
 
-    // TODO - clean up object definitions
-    let balances = {};
-    let payments = {}; 
-    let paymentAmounts = {}; 
+    // json object to track the balances, payment totals and payment counts per month
+    const balances = {};
+
+    // handle empty case inputs
+    if (!A || A.length == 0) {
+        return 0;
+    }
 
     // loop through all transactions
     for (var k = 0; k < A.length; k++) {
-        let date = D[k];
-        let dateArray = date.split('-');
-        let month = dateArray[1];
-        let amount = A[k];
+        // extract information from transactions
+        const date = D[k];
+        const dateArray = date.split('-');
+        // strip any leading 0s
+        const month = parseInt(dateArray[1]);
+        const amount = A[k];
 
-        // update balance
-        let monthBalance = balances[month];
-        if (monthBalance === undefined) {
-            // console.log(amount);
-            balances[month] = 0 + amount;
-            // console.log(balances[month]);
-        } else {
-            // console.log(amount);
-            balances[month] = balances[month] + amount;
-        }
-
-        // update payment details
-        let monthPayments = payments[month];
-        let monthPaymentAmounts = paymentAmounts[month];
-        if (monthPayments === undefined) {
-            payments[month] = 0;
-            paymentAmounts[month] = 0;
-        }
-
+        // handle negative transaction amounts (payments)
+        let payment = 0;
+        let increment = 0;
         if (amount < 0) {
-            payments[month] = payments[month] + 1;
-            paymentAmounts[month] = paymentAmounts[month] + amount;
+            payment = amount;
+            increment++;
         }
+
+        // calculate monthly balance values
+        if (balances[month] === undefined) {
+            balances[month] = {
+                'balance': 0 + amount, 
+                'paymentTotal': 0 + payment, 
+                'paymentCount': 0 + increment,
+            };
+        } else {
+            let balance = balances[month];
+            balances[month] = {
+                'balance': balance['balance'] + amount, 
+                'paymentTotal': balance['paymentTotal'] + payment, 
+                'paymentCount': balance['paymentCount'] + increment,
+            };
+        }        
         
     }
 
     // calculate total balance
-    let balance = 0;
+    let totalBalance = 0;
 
-    Object.keys(balances).forEach(function(k) {
-        let monthCardFee = 5;
-        if (payments[k] >= 3 && paymentAmounts[k] <= -100) {
-            monthCardFee = 0;
+    // loop through all months in year
+    for (var m = 1; m <= 12; m++) {
+        // get null object if no balance was calculated for month
+        const balance = balances[m] || {};
+        const pCount = balance['paymentCount'] || 0;
+        const pTotal = balance['paymentTotal'] || 0;
+
+        // handle waiving account fees
+        let monthlyFee = -5;
+        if (pCount > 2 && pTotal <= -100) {
+            monthlyFee = 0;
         }
 
-        // console.log(balances[k]);
-        balance = balance + balances[k] + monthCardFee;
-        // console.log(balance, balances[k], monthCardFee);
-    })
+        // caculate yearly balance aggregate
+        totalBalance = totalBalance + (balance['balance'] || 0) + monthlyFee;
+    }
 
-    // console.log(balances);
-    // console.log(payments);
-    // console.log(paymentAmounts);
-    // console.log(balance);
-    return balance;
+    return totalBalance;
 
+}
+
+
+/**
+ * Basic function to perform automated unit testing
+ * @param {*} input Input value to pass to tested function
+ * @param {*} expectedResult result tested function should return
+ */
+ function test(name, expectedResult, inputA, inputB) {
+    let result;
+    let inputs;
+    let actual;
+    if (inputB) {
+        actual = solutionA(inputA, inputB);
+        result = actual == expectedResult;
+        inputs = `inputA: ${inputA}\t inputB: ${inputB}\n`;
+    } else {
+        actual = solutionA(inputA);
+        result = actual == expectedResult;
+        inputs = `inputA: ${inputA}`;
+    }
+     
+    console.log(`${name}`);
+    console.log(`pass: ${result}\t expected: ${expectedResult}\t actual: ${actual}\t ${inputs}\t`);
 }
