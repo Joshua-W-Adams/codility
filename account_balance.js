@@ -136,5 +136,6 @@ function solutionA(A, D) {
     }
      
     console.log(`${name}`);
-    console.log(`pass: ${result}\t expected: ${expectedResult}\t actual: ${actual}\t ${inputs}\t`);
+    console.log(`pass: ${result}`);
+    console.log(`expected: ${expectedResult}\t actual: ${actual}\t ${inputs}\t`);
 }

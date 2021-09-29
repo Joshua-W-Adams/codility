@@ -1,19 +1,24 @@
 /**
- * <TODO: Add description of problem>
+ * Determine the sentance containing the largest number of words.
+ * 
+ * Input parameters are provided as follows:
+ * S: <String (a-z, A-Z, !, ., ?)> String representing sentances separated by !, . or ?
+ * 
+ * Words within sentances are separated by spaces.
+ * A zero length word is not a valid word
+ * A zero length sentance is a valid sentance
  * 
  * Assumptions:
- * - <TODO: add list of assumptions for solution>
+ * - S is within [1..100]
  * 
  * Complexity:
- * - <TODO: add expected time complexity>
- * - <TODO: Add expected space complexity>
+ * - Time Complexity: O(N^2). Performance scales exponentially with input. There are nested loops.
  */
 
 /**
  * Sample Test cases
  */
 
-// <TODO: Add the following test cases>
 // Correctness:
 // - empty or zero 
 // - minimal - just one input, or whatever is the absolute minimal conceiveable input
@@ -22,35 +27,21 @@
 // Performance:
 // - worst case - i.e. biggest possible numbers for speed and space constraints
 
-test('empty case', '', 0);
-test('empty case', null, 0);
+test('empty case', 0, '');
+test('null case', 0, null);
+test('single sentance single word', 1, 'a');
 
-test('minimal case', 'a', 1);
+test('separator at start of input', 1, '.a');
+test('separator at end of input', 1, 'a.');
 
-test('edge case', '.a', 1);
-test('edge case', 'a.', 1);
-
-test('proper sentance', 'We test coders. Give us a try?', 4);
-
-test('random stuff', '.!?a.!?', 1);
-
-/**
- * Basic function to perform automated unit testing
- * @param {*} input Input value to pass to tested function
- * @param {*} expectedResult result tested function should return
- */
-function test(name, input, expectedResult) {
-    let result = solutionA(input) == expectedResult;
-    console.log(`name: ${name}`);
-    console.log(`pass: ${result}\t expectedResult: ${expectedResult}\t input: ${input}\n`);
-}
+test('multiple sentances. two separators.', 4, 'We test coders. Give us a try?');
+test('multiple sentances. three separators.', 1, '.!?a.!?');
 
 /**
  * Default function signature for solution
  * @param {*} A Some input parameter
  * @returns Some solution
  */
-
 function solutionA(S) {
 
     // set default maximum words value
@@ -63,7 +54,6 @@ function solutionA(S) {
 
     // split input string S into a list of sentances
     let sentances = S.split(/[.!?]/);
-
 
     // loop through all sentances
     for (var s = 0; s < sentances.length; s++) {
@@ -88,4 +78,28 @@ function solutionA(S) {
 
     return maxWords;
 
+}
+
+/**
+ * Basic function to perform automated unit testing
+ * @param {*} input Input value to pass to tested function
+ * @param {*} expectedResult result tested function should return
+ */
+ function test(name, expectedResult, inputA, inputB) {
+    let result;
+    let inputs;
+    let actual;
+    if (inputB) {
+        actual = solutionA(inputA, inputB);
+        result = actual == expectedResult;
+        inputs = `inputA: ${inputA}\t inputB: ${inputB}\n`;
+    } else {
+        actual = solutionA(inputA);
+        result = actual == expectedResult;
+        inputs = `inputA: ${inputA}\n`;
+    }
+     
+    console.log(`${name}`);
+    console.log(`pass: ${result}`);
+    console.log(`expected: ${expectedResult}\t actual: ${actual}\t ${inputs}\t`);
 }
