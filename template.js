@@ -1,4 +1,30 @@
 /**
+ * Problem Solving Methodology
+ * 
+ * 1. Understand the problem
+ *    Read twice if necessary
+ * 
+ * 2. Break down the requirements
+ *    Define inputs, outputs and any special output considerations
+ *    Do a few basic examples
+ * 
+ * 3. Define the assumptions
+ * 
+ * 4. Write pseudocode 
+ *    Comment the high level steps directly in function signature
+ *    DO NOT proceed until this is solved
+ *    This is often referred to as "Breath First" coding
+ * 
+ * 5. Consider options
+ * 
+ * 6. Code 
+ *    Directly in testing platform environment
+ *    Avoids unecessary time lost due to writing test cases, function signatures and creating new files
+ * 
+ * 7. Test and Debug
+ */
+
+/**
  * <TODO: Add description of problem>
  * 
  * Assumptions:
