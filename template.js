@@ -22,21 +22,10 @@
 // Performance:
 // - worst case - i.e. biggest possible numbers for speed and space constraints
 
-test('some test name', [0,1,2,4], 3);
+test('some test name', 3, [0,1,2,4]);
 
 /**
- * Basic function to perform automated unit testing
- * @param {*} input Input value to pass to tested function
- * @param {*} expectedResult result tested function should return
- */
-function test(name, input, expectedResult) {
-    let result = solutionA(input) == expectedResult;
-    console.log(`name: ${name}`);
-    console.log(`pass: ${result}\t expectedResult: ${expectedResult}\t input: ${input}\n`);
-}
-
-/**
- * Default function signature for solution
+ * Default function signature for solution. One input.
  * @param {*} A Some input parameter
  * @returns Some solution
  */
@@ -48,4 +37,39 @@ function solutionA(A) {
 
     return ;
 
+}
+
+/**
+ * Default function signature for solution. Two Inputs.
+ * @param {*} A Some input parameter
+ * @param {*} D Some input parameter
+ * @returns Some solution
+ */
+// function solutionA(A, D) {
+
+
+// }
+
+/**
+ * Basic function to perform automated unit testing
+ * @param {*} input Input value to pass to tested function
+ * @param {*} expectedResult result tested function should return
+ */
+function test(name, expectedResult, inputA, inputB) {
+    let result;
+    let inputs;
+    let actual;
+    if (inputB) {
+        actual = solutionA(inputA, inputB);
+        result = actual == expectedResult;
+        inputs = `inputA: ${inputA}\t inputB: ${inputB}\n`;
+    } else {
+        actual = solutionA(inputA);
+        result = actual == expectedResult;
+        inputs = `inputA: ${inputA}\n`;
+    }
+     
+    console.log(`${name}`);
+    console.log(`pass: ${result}`);
+    console.log(`expected: ${expectedResult}\t actual: ${actual}\t ${inputs}\t`);
 }
