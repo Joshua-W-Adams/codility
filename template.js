@@ -17,11 +17,14 @@
  * 
  * 5. Consider options
  * 
- * 6. Code 
+ * 6. Write Tests (TDD)
+ *    Usually included in testing platform already
+ * 
+ * 7. Code 
  *    Directly in testing platform environment
  *    Avoids unecessary time lost due to writing test cases, function signatures and creating new files
  * 
- * 7. Test and Debug
+ * 8. Test and Debug
  */
 
 /**
