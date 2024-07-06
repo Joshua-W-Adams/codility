@@ -6,17 +6,19 @@ Steps to solve.
 
 1. Visualise Examples
 
-- DAG graph??
+- Directed Acyclic Graph (DAG) graph is used to visually represent the dependencies between a set of tasks.
+
+In the context of DP, where a problem is a series of subproblems, each node represents a subproblem and each directed edge represents a dependency between subproblems.
 
 2. Find the sub problem
 
 Three steps
 
 1. Recursive solution
-2. Store (memoize) memoize != meorise
+2. Store (memoize) memoize != memorise
 3. Bottom up
 
-A great way to demostrate where recursion is an excellant solution to a problem is the Fibonacci Sequence. This sequence is as follows:
+A great way to demostrate where recursion is an excellent solution to a problem is the Fibonacci Sequence. This sequence is as follows:
 
 ```
 1, 1, 2, 3, 5, 8, 13 ..., n
@@ -94,9 +96,9 @@ function fib(n: number, memoized: number[]) {
 }
 ```
 
-As you can see this changes the T complexity of this solution significantly as each fibonacci number in the sequence can only have thir function called once and subsequent calls are looked out from the array of information already stored in memory.
+As you can see this changes the T complexity of this solution significantly as each fibonacci number in the sequence can only have their function called once and subsequent calls are looked out from the array of information already stored in memory.
 
-But we can actually define this solution in another method called bottom up, and just like we execute a recurrsive function in essence from bottom up, we can saolve this problem by storing the results of each fibonacci function in a bottom up approach in an array.
+But we can actually define this solution in another method called bottom up, and just like we execute a recursive function in essence from bottom up, we can solve this problem by storing the results of each fibonacci function in a bottom up approach in an array.
 
 ```ts
 function fib_bottom_up(n: number) {
