@@ -1,34 +1,31 @@
 /**
  * Problem Solving Methodology
  *
- * 1. Understand the problem
+ * - Understand the problem
  *    Read twice if necessary
  *
- * 2. Break down the requirements
+ * - Break down the requirements
  *    Define inputs, outputs and any special output considerations
  *    Do a few basic examples
+ *    Ask yourself. Are there any dependencies between inputs and results?
+ *    Can these be descriped by algebra?
  *
- * 3. Define the assumptions
- *
- * 4. Write pseudocode
+ * - Pseudocode
  *    Comment the high level steps directly in function signature
  *    DO NOT proceed until this is solved
  *    This is often referred to as "Breath First" coding
  *
- * 5. Consider options
- *
- * 6. Write Tests (TDD)
+ * - Tests (TDD)
  *    Usually included in testing platform already
  *
- * 7. Code
- *    Directly in testing platform environment
- *    Avoids unecessary time lost due to writing test cases, function signatures and creating new files
+ * - Code
  *
- * 8. Test and Debug
+ * - Test and Debug
  *
- * 9. Review
+ * - Review
  *    time complexity
  *    space complexity
+ *    other more efficient solutions to problem
  *
  */
 
