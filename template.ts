@@ -6,6 +6,12 @@
  *    Draw out and visualise the logic and what happens at each step
  *    - as a loop iteration
  *    - or a dependency graph (DAG)
+ *    TODO - add all problem types here
+ *    - identify the problem type:
+ *     - data structures
+ *      - arrays, strings, linked lists, trees, graphs, dynamic programming
+ *     - algorithms
+ *       - DFS, BFS, sorting, etc.)
  *
  * - Break down the requirements
  *    Define inputs, outputs and any special output considerations
