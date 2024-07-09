@@ -72,6 +72,8 @@ fib(2) fib(1)     1
 
 As you can see this calculation can get quite inefficient, due to the repetition in the function calls. E.g fib(2) is called twice in the above fibonacci tree.
 
+Also given this adds items to the javascript runtimes stack data structure, this can cause stack overflow (or memory) errors on large datasets.
+
 what memoization says is that you store the result of fib(2) is memory somewhere so the next time that fib(2) is called your have already moized that result and can simply look it up again.
 
 The way we do that is simply store the result of fib(n) in the nth index of an array and update the recursive solution to look at this position in the array.
@@ -119,5 +121,27 @@ function fib_bottom_up(n: number) {
 
   /// 4. return the result
   return arr[n];
+}
+```
+
+```ts
+function bruteForce(n: number) {
+  let fib = 0;
+  let fib1 = 0;
+  let fib2 = 0;
+
+  // step 2: loop up to the curernt fibonacci number
+  for (let i = 0; i < n; i++) {
+    // step 3: calculate current fib number
+    if (i === 0 || i == 1) {
+      fib = 1;
+    } else {
+      fib = fib1 + fib2;
+    }
+
+    // step 4: update fib1 and fib 2 for next loop
+    fib2 = fib1;
+    fib1 = fib;
+  }
 }
 ```
