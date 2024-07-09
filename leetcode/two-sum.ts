@@ -193,3 +193,38 @@ function recursiveWithMemo(
   // case 1 - increment index i
   return recursive(i + 1, i + 2, nums, target);
 }
+
+function rescursive2(nums: number[], target: number) {
+  // defined the start position
+  let i = 0;
+
+  // define the map for string the soltuions
+  const map = new Map<number, number>();
+
+  function recursion(i: number) {
+    // end of loop reached: should never happen
+    if (i === nums.length - 1) {
+      return [];
+    }
+
+    // base case: first item in array
+    if (i == 0) {
+      return recursion(i + 1);
+    }
+
+    // base case: solution
+    const match = target - nums[i];
+
+    if (map.get(match) != null && map.get(match) != undefined) {
+      return [i, map.get(match)];
+    }
+
+    // recursive case
+    // store the solution for the next iteration
+    map.set(nums[i], i);
+
+    return recursion(i + 1);
+  }
+
+  return recursion(i);
+}
